@@ -16,8 +16,8 @@
                 <span >
                     <button class="oi oi-arrow-top" aria-hidden="true" @onclick="PressUp"></button>
                 </span>
-                <span class="oi oi-arrow-bottom" aria-hidden="true">
-                 
+                <span >
+                    <button class="oi oi-arrow-bottom" aria-hidden="true" @onclick="PressDown"></button>
                 </span>
             </th>
             <th>Task Status</th>
@@ -57,5 +57,9 @@
     private void PressUp()
     {
         Console.WriteLine("Pressed Up");
+    }
+    private void PressDown()
+    {
+        
     }
 }
