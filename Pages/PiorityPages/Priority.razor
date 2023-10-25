@@ -1,7 +1,49 @@
 ﻿@page "/priority"
+@inject PriorityService priorityService
+@inject NavigationManager _navigator
 
 <h3>Priority</h3>
 
+<table>
+    <thead>
+        <tr>
+            <th>Priority Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var priority in priorities)
+        {
+            <tr>
+                <td>@priority.priority_name</td>
+                <td>
+                    <button class="btn btn-sm btn-primary" @onclick="() => onEdit(priority)">Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger" @onclick="() => onDelete(priority)">Delete</button>
+                </td>
+            </tr>
+        }
+        
+    </tbody>
+</table>
+
 @code {
 
+    List<PriorityModel> priorities = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        priorities = await priorityService.GetPriorities();
+        await base.OnInitializedAsync();
+    }
+
+    private void onEdit(PriorityModel priority)
+    {
+        _navigator.NavigateTo("/priority/edit/"+ priority.id);
+    }
+    private async void onDelete(PriorityModel priority)
+    {
+        await priorityService.DeletePriority(priority.id);
+        _navigator.NavigateTo("/priority");
+    }
 }

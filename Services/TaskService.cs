@@ -35,5 +35,17 @@ namespace TaskManagementSystem.Services
             }
             await _context.SaveChangesAsync();
         }
+        public async Task<TaskModel> GetTask(int id)
+        {
+            var item= await _context.Tasks.FirstOrDefaultAsync(x=>x.id == id);
+            if(item != null)
+            {
+                return item;
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

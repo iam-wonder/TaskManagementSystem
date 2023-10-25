@@ -1,9 +1,13 @@
 ﻿@page "/tasks/create"
+@inject NavigationManager _navigator
+@inject TaskService taskService
+@inject PriorityService priorityService
 
 <h3>CreateTask</h3>
 
 <EditForm Model="taskModel" OnValidSubmit="Submit">
 <DataAnnotationsValidator></DataAnnotationsValidator>
+<ValidationSummary></ValidationSummary>
     <div class="card">
         <div class="card-header">
             Create a Task
@@ -12,10 +16,12 @@
             <div class="mb-3">
                 <label for="tasK_name" class="form-label">Task Name</label>
                 <InputText @bind-Value="taskModel.task_name" class="form-control" id="tasK_name"></InputText>
+                <ValidationMessage For="() => taskModel.task_name" />
             </div>
             <div class="mb-3">
                 <label for="task_description" class="form-label">Task Description</label>
                 <InputTextArea  @bind-Value="taskModel.task_description" class="form-control" id="task_description" ></InputTextArea>
+                <ValidationMessage For="() => taskModel.task_description" />
             </div>
             <div class="mb-3">
                 <label for="due_date" class="form-label">Due Date</label>
@@ -30,7 +36,9 @@
                         <option value="@priority.id" class="form-control"> @priority.priority_name </option>
                     }
                 </InputSelect>
+                <ValidationMessage For="() => taskModel.PriorityId" />
             </div>
+            
             <br />
             <button type="submit" class="btn btn-primary">Submit</button>
             
@@ -46,14 +54,26 @@
     public TaskModel taskModel = new();
     public List<PriorityModel> priorities = new();
 
-    protected override Task OnInitializedAsync()
+    protected async override Task OnInitializedAsync()
     {
+        priorities = await priorityService.GetPriorities();
         taskModel.due_date = DateTime.Now;
-        return base.OnInitializedAsync();
+        await base.OnInitializedAsync();
     }
 
-    private void Submit()
+    private async void Submit()
     {
-        Console.WriteLine("mark hit");
+        List<TaskModel> temp = await taskService.Tasksasync();
+
+        await taskService.AddTask(new TaskModel
+        {
+           task_id =  temp.Count(),
+           task_name = taskModel.task_name,
+           task_description = taskModel.task_description,
+           due_date = taskModel.due_date,
+           PriorityId = taskModel.PriorityId
+        });
+
+        _navigator.NavigateTo("/tasks");
     }
 }

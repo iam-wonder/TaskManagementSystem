@@ -1,9 +1,15 @@
 ﻿@page "/tasks"
 @inject TaskService taskService
+@inject NavigationManager _navigator
 
 <h3>Tasks</h3>
 
 <button class="btn btn-sm btn-warning">Create a Task</button>
+<br />
+@if (show_alert)
+{
+     
+}
 <br />
 <table class="table table-sm" style="width:75%">
     <thead>
@@ -27,17 +33,17 @@
         @foreach (var task in tasks)
         {
             <tr>
-                <td>@task.id</td>
+                <td>@task.task_id</td>
                 <td>@task.task_name</td>
                 <td>@task.task_description</td>
                 <td>@task.due_date</td>
                 <td>@task.Priority.priority_name</td>
                 <td>@task.task_staus</td>
                 <td>
-                    <button class="btn btn-sm btn-primary">Edit</button>
+                    <button class="btn btn-sm btn-primary" @onclick="() =>edit(task)" >Edit</button>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-danger">Delete</button>
+                    <button class="btn btn-sm btn-danger" @onclick="() =>delete(task)">Delete</button>
                 </td>
             </tr>
         }
@@ -48,18 +54,49 @@
 @code {
     public List<TaskModel> tasks = new();
 
+    bool ascendPriority = false;
+    bool descendPriority = false;
+
+    bool show_alert = false;
+
+    public string alert_message {get;set;} 
+
     protected async override Task OnInitializedAsync()
     {
         tasks = await taskService.Tasksasync();
+
+        if(ascendPriority)
+        {
+            tasks.OrderBy(x => x.Priority);
+        }
+        if (descendPriority)
+        {
+            tasks.OrderByDescending(x => x.Priority);
+        }
+
+
         await base.OnInitializedAsync();
     }
 
     private void PressUp()
     {
-        Console.WriteLine("Pressed Up");
+        ascendPriority = true;
     }
     private void PressDown()
     {
+        descendPriority = true;
+    }
+
+    private void edit(TaskModel task)
+    {
+        _navigator.NavigateTo("/tasks/edit/"+ task.id);
+    }
+    private async void delete (TaskModel task)
+    {
+        await taskService.DeleteTask(task.id);
+        show_alert = true;
+        alert_message = "Task was succefully deleted";
+        _navigator.NavigateTo("/tasks", forceLoad:true);
         
     }
 }

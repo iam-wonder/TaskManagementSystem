@@ -1,7 +1,69 @@
 ﻿@page "/tasks/edit/{id:int}"
+@inject TaskService taskService
+@inject PriorityService priorityService
 
 <h3>EditTask</h3>
 
-@code {
+<EditForm Model="task" OnValidSubmit="Submit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="card">
+        <div class="card-header">
+            Create a Task
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="tasK_name" class="form-label">Task Name</label>
+                <InputText @bind-Value="task.task_name" class="form-control" id="tasK_name"></InputText>
+                <ValidationMessage For="() => task.task_name" />
+            </div>
+            <div class="mb-3">
+                <label for="task_description" class="form-label">Task Description</label>
+                <InputTextArea @bind-Value="task.task_description" class="form-control" id="task_description"></InputTextArea>
+                <ValidationMessage For="() => task.task_description" />
+            </div>
+            <div class="mb-3">
+                <label for="due_date" class="form-label">Due Date</label>
+                <InputDate @bind-Value="task.due_date" class="form-control" id="due_date"></InputDate>
+            </div>
+            <div class="mb-3">
+                <label for="task_priority" class="form-label">Task Priority</label>
+                <InputSelect @bind-Value="task.PriorityId" class="form-control">
+                    <option selected>Select a priority level</option>
+                    @foreach (var priority in priorities)
+                    {
+                        <option value="@priority.id" class="form-control"> @priority.priority_name </option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => task.PriorityId" />
+            </div>
 
+            <br />
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </div>
+    </div>
+
+
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    List<PriorityModel> priorities = new();
+
+    TaskModel task = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        task = await taskService.GetTask(id);
+        priorities = await priorityService.GetPriorities();
+        await base.OnInitializedAsync();
+    }
+    private void Submit()
+    {
+        
+    }
 }
