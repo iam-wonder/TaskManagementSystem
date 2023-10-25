@@ -1,8 +1,11 @@
 ﻿@page "/priority/create"
+@inject NavigationManager _navigator
+@inject PriorityService priorityService
 
 
-<EditForm Model="model">
+<EditForm Model="model" OnValidSubmit="onSubmit">
 <DataAnnotationsValidator></DataAnnotationsValidator>
+<ValidationSummary></ValidationSummary>
 
     <div class="card">
         <div class="card-header">
@@ -12,7 +15,7 @@
             <div class="mb-3">
                 <label for="priority_name" class="form-label">Task Name</label>
                 <InputText @bind-Value="model.priority_name" class="form-control" id="priority_name"></InputText>
-                
+                <ValidationMessage For="()=> model.priority_name" />
             </div>
             
             <br />
@@ -26,4 +29,10 @@
 @code {
     public PriorityModel model = new();
 
+    private async void onSubmit()
+    {
+        await priorityService.AddPriority(model);
+
+        _navigator.NavigateTo("/priority");
+    }
 }

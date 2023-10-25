@@ -4,14 +4,14 @@
 
 <h3>Tasks</h3>
 
-<button class="btn btn-sm btn-warning">Create a Task</button>
+<button class="btn btn-sm btn-warning" @onclick="onCreate" >Create a Task</button>
 <br />
 @if (show_alert)
 {
-     
+     <TaskManagementSystem.Pages.Components.Alert ></TaskManagementSystem.Pages.Components.Alert>
 }
 <br />
-<table class="table table-sm" style="width:75%">
+<table class="table table-sm" >
     <thead>
         <tr>
             <th>Task Id</th>
@@ -36,14 +36,23 @@
                 <td>@task.task_id</td>
                 <td>@task.task_name</td>
                 <td>@task.task_description</td>
-                <td>@task.due_date</td>
+                <td>@task.due_date.Date.ToShortDateString()</td>
                 <td>@task.Priority.priority_name</td>
-                <td>@task.task_staus</td>
+                @if (task.task_staus)
+                {
+                    <td class="text-success">Is Completed</td>
+                }
+                else{
+                    <td class="text-secondary">Not Completed</td>
+                }
                 <td>
-                    <button class="btn btn-sm btn-primary" @onclick="() =>edit(task)" >Edit</button>
+                    <button class="btn btn-sm btn-secondary" @onclick="() => onMarkDone(task)">Mark as Done</button>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-danger" @onclick="() =>delete(task)">Delete</button>
+                    <button class="btn btn-sm btn-primary" @onclick="() =>edit(task)" >Edit Task</button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger" @onclick="() =>delete(task)">Delete Task</button>
                 </td>
             </tr>
         }
@@ -77,14 +86,17 @@
 
         await base.OnInitializedAsync();
     }
+   
 
     private void PressUp()
     {
         ascendPriority = true;
+        tasks.OrderBy(x => x.Priority);
     }
     private void PressDown()
     {
         descendPriority = true;
+        tasks.OrderByDescending(x => x.Priority);
     }
 
     private void edit(TaskModel task)
@@ -97,6 +109,14 @@
         show_alert = true;
         alert_message = "Task was succefully deleted";
         _navigator.NavigateTo("/tasks", forceLoad:true);
+
+    }
+    private void onCreate()
+    {
+        _navigator.NavigateTo("/tasks/create");
+    }
+    private void onMarkDone(TaskModel task)
+    {
         
     }
 }

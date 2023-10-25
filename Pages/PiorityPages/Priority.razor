@@ -3,8 +3,8 @@
 @inject NavigationManager _navigator
 
 <h3>Priority</h3>
-
-<table>
+<button class="btn btn-sm btn-warning" @onclick="onCreate">Create A Priority</button>
+<table class="table table-light table-sm" style="width:50%;justify-content:center" >
     <thead>
         <tr>
             <th>Priority Name</th>
@@ -44,6 +44,10 @@
     private async void onDelete(PriorityModel priority)
     {
         await priorityService.DeletePriority(priority.id);
-        _navigator.NavigateTo("/priority");
+        _navigator.NavigateTo("/priority",forceLoad:true);
+    }
+    private void onCreate()
+    {
+        _navigator.NavigateTo("/priority/create");
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Model;
 
@@ -14,38 +15,88 @@ namespace TaskManagementSystem.Services
 
         public async Task<List<TaskModel>> Tasksasync()
         {
-            return await _context.Tasks.Include(x=>x.Priority).ToListAsync();
+            try
+            {
+                return await _context.Tasks.Include(x => x.Priority).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                return new List<TaskModel>();
+                
+            }
+
+           
         }
         public async Task AddTask (TaskModel task)
         {
-            _context.Tasks.Add(task);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Tasks.Add(task);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
         }
         public async Task UpdateTask (TaskModel task)
         {
-            _context.Tasks.Update(task);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Tasks.Update(task);
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateException ex)
+            {
+
+            }
+            
+            catch (Exception ex)
+            {
+
+            }
+            
         }
         public async Task DeleteTask (int id)
         {
-            var item = await _context.Tasks.FindAsync(id);
-            if (item != null)
+            try
             {
-                _context.Tasks.Remove(item);
+                var item = await _context.Tasks.FindAsync(id);
+                if (item != null)
+                {
+                    _context.Tasks.Remove(item);
+                }
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                
+            }
+            
         }
         public async Task<TaskModel> GetTask(int id)
         {
-            var item= await _context.Tasks.FirstOrDefaultAsync(x=>x.id == id);
-            if(item != null)
+            try
             {
-                return item;
+                var item = await _context.Tasks.FirstOrDefaultAsync(x => x.id == id);
+                if (item != null)
+                {
+                    return item;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
-            {
+            catch (Exception ex) {
                 return null;
             }
+            
         }
     }
 }

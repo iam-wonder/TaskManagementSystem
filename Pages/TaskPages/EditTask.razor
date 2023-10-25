@@ -1,6 +1,7 @@
 ﻿@page "/tasks/edit/{id:int}"
 @inject TaskService taskService
 @inject PriorityService priorityService
+@inject NavigationManager _navigator
 
 <h3>EditTask</h3>
 
@@ -45,7 +46,6 @@
     </div>
 
 
-
 </EditForm>
 
 @code {
@@ -62,8 +62,9 @@
         priorities = await priorityService.GetPriorities();
         await base.OnInitializedAsync();
     }
-    private void Submit()
+    private  async void Submit()
     {
-        
+        await taskService.UpdateTask(task);
+        _navigator.NavigateTo("/tasks");
     }
 }
