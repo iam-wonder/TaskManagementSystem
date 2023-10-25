@@ -1,0 +1,59 @@
+﻿@page "/tasks/create"
+
+<h3>CreateTask</h3>
+
+<EditForm Model="taskModel" OnValidSubmit="Submit">
+<DataAnnotationsValidator></DataAnnotationsValidator>
+    <div class="card">
+        <div class="card-header">
+            Create a Task
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="tasK_name" class="form-label">Task Name</label>
+                <InputText @bind-Value="taskModel.task_name" class="form-control" id="tasK_name"></InputText>
+            </div>
+            <div class="mb-3">
+                <label for="task_description" class="form-label">Task Description</label>
+                <InputTextArea  @bind-Value="taskModel.task_description" class="form-control" id="task_description" ></InputTextArea>
+            </div>
+            <div class="mb-3">
+                <label for="due_date" class="form-label">Due Date</label>
+                <InputDate @bind-Value="taskModel.due_date" class="form-control" id="due_date"></InputDate>
+            </div>
+            <div class="mb-3">
+                <label for="task_priority" class="form-label">Task Priority</label>
+                <InputSelect @bind-Value="taskModel.PriorityId" class="form-control">
+                    <option selected>Select a priority level</option>
+                    @foreach (var priority in priorities)
+                    {
+                        <option value="@priority.id" class="form-control"> @priority.priority_name </option>
+                    }
+                </InputSelect>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary">Submit</button>
+            
+        </div>
+    </div>
+
+        
+    
+</EditForm>
+
+
+@code {
+    public TaskModel taskModel = new();
+    public List<PriorityModel> priorities = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        taskModel.due_date = DateTime.Now;
+        return base.OnInitializedAsync();
+    }
+
+    private void Submit()
+    {
+        Console.WriteLine("mark hit");
+    }
+}
