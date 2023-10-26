@@ -232,6 +232,9 @@ namespace TaskManagementSystem.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
+                    b.Property<int>("priority_level")
+                        .HasColumnType("int");
+
                     b.Property<string>("priority_name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

@@ -12,7 +12,7 @@ using TaskManagementSystem.Data;
 namespace TaskManagementSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231024181103_init")]
+    [Migration("20231025233903_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -233,6 +233,9 @@ namespace TaskManagementSystem.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
+
+                    b.Property<int>("priority_level")
+                        .HasColumnType("int");
 
                     b.Property<string>("priority_name")
                         .IsRequired()

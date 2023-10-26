@@ -10,14 +10,19 @@
     <div class="card">
         <div class="card-header">
             Create a Priority
+            <button class="btn btn-sm btn-secondary float-end" @onclick="onBack">Back</button>
         </div>
         <div class="card-body">
             <div class="mb-3">
-                <label for="priority_name" class="form-label">Task Name</label>
+                <label for="priority_name" class="form-label">Priority Name</label>
                 <InputText @bind-Value="model.priority_name" class="form-control" id="priority_name"></InputText>
                 <ValidationMessage For="()=> model.priority_name" />
             </div>
-            
+            <div class="mb-3">
+                <label for="priority_name" class="form-label">Priority Level</label>
+                <InputNumber @bind-Value="model.priority_level" class="form-control" id="priority_name"></InputNumber>
+                <ValidationMessage For="()=> model.priority_level" />
+            </div>
             <br />
             <button type="submit" class="btn btn-primary">Submit</button>
 
@@ -31,8 +36,13 @@
 
     private async void onSubmit()
     {
+
         await priorityService.AddPriority(model);
 
+        _navigator.NavigateTo("/priority");
+    }
+    private void onBack()
+    {
         _navigator.NavigateTo("/priority");
     }
 }

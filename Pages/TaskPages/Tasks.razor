@@ -11,60 +11,80 @@
      <TaskManagementSystem.Pages.Components.Alert ></TaskManagementSystem.Pages.Components.Alert>
 }
 <br />
-<table class="table table-sm" >
-    <thead>
-        <tr>
-            <th>Task Id</th>
-            <th>Task Name</th>
-            <th>Task Description</th>
-            <th>Due Date</th>
-            <th>Priority Level 
-                <span >
-                    <button class="oi oi-arrow-top" aria-hidden="true" @onclick="PressUp"></button>
-                </span>
-                <span >
-                    <button class="oi oi-arrow-bottom" aria-hidden="true" @onclick="PressDown"></button>
-                </span>
-            </th>
-            <th>Task Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var task in tasks)
+
+<MudTable Items="@taskList" Hover="true" SortLabel="Sort By" FixedHeader="@fixed_header"
+          Bordered="@bordered" Dense="@dense" Striped="@striped" Filter="new Func<TaskModel,bool>(FilterFunc1)">
+
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">List of Tasks</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start" 
+        AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<TaskModel, object>(x=>x.task_id)">#</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel Enabled="@enabled" SortBy="new Func<TaskModel, object>(x=>x.task_name)">Task Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<TaskModel, object>(x=>x.task_description)">Task Description</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<TaskModel, object>(x=>x.Priority.priority_level)">Priority Level</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<TaskModel, object>(x=>x.due_date)">Due Date</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<TaskModel, object>(x=>x.task_staus)">Task Staus</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="task_id">@context.task_id</MudTd>
+        <MudTd DataLabel="Task Name">@context.task_name</MudTd>
+        <MudTd DataLabel="Task Description">@context.task_description</MudTd>
+        <MudTd DataLabel="Priority Level">@context.Priority.priority_name</MudTd>
+        <MudTd DataLabel="Due Date">@context.due_date.ToLongDateString()</MudTd>
+        @if (@context.task_staus)
         {
-            <tr>
-                <td>@task.task_id</td>
-                <td>@task.task_name</td>
-                <td>@task.task_description</td>
-                <td>@task.due_date.Date.ToShortDateString()</td>
-                <td>@task.Priority.priority_name</td>
-                @if (task.task_staus)
-                {
-                    <td class="text-success">Is Completed</td>
-                }
-                else{
-                    <td class="text-secondary">Not Completed</td>
-                }
-                <td>
-                    <button class="btn btn-sm btn-secondary" @onclick="() => onMarkDone(task)">Mark as Done</button>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-primary" @onclick="() =>edit(task)" >Edit Task</button>
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-danger" @onclick="() =>delete(task)">Delete Task</button>
-                </td>
-            </tr>
+            <MudTd DataLabel="Task Status">Completed</MudTd>
         }
+        else
+        {
+            <MudTd DataLabel="Task Status">Not Completed</MudTd>
+        }
+        @if (!context.task_staus)
+        {
+            <MudTd DataLabel="Mark Done Button">
+                <MudButton Size="Size.Small" Variant="Variant.Filled" Class="indigo lighten-3" OnClick="()=> onMarkDone(context)">Mark as Done</MudButton>
+            </MudTd>
+            <MudTd DataLabel="Edit Task">
+                <MudButton Size="Size.Small" Variant="Variant.Filled" Class="cyan" OnClick="()=> edit(context)">Edit Task</MudButton>
+            </MudTd>
+        } 
         
-    </tbody>
-</table>
+        <MudTd DataLabel="Delete Task">
+            <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Error" OnClick="()=>delete(context)">Delete Task</MudButton>
+        </MudTd>
+    </RowTemplate>
+
+</MudTable>
+
+@if(taskList.Count() > 0)
+{
+    <div class="d-flex flex-wrap mt-4">
+        <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+        <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+        <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+        <MudSwitch @bind-Checked="enabled" Color="Color.Info">Enable Sorting on Task Name</MudSwitch>
+        <MudSwitch @bind-Checked="@fixed_header">Fixed Header</MudSwitch>
+    </div>
+}
+
 
 @code {
-    public List<TaskModel> tasks = new();
 
-    bool ascendPriority = false;
-    bool descendPriority = false;
+
+    private bool enabled = true;
+    private bool fixed_header = true;
+    private bool markdone = false;
+    private bool hover = true;
+    private bool dense = false;
+    private bool striped = false;
+    private bool bordered = false;
+    private string searchString1 = "";
+
+    private IEnumerable<TaskModel> taskList = new List<TaskModel>();
 
     bool show_alert = false;
 
@@ -72,31 +92,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-        tasks = await taskService.Tasksasync();
-
-        if(ascendPriority)
-        {
-            tasks.OrderBy(x => x.Priority);
-        }
-        if (descendPriority)
-        {
-            tasks.OrderByDescending(x => x.Priority);
-        }
-
-
-        await base.OnInitializedAsync();
-    }
-   
-
-    private void PressUp()
-    {
-        ascendPriority = true;
-        tasks.OrderBy(x => x.Priority);
-    }
-    private void PressDown()
-    {
-        descendPriority = true;
-        tasks.OrderByDescending(x => x.Priority);
+        taskList = await taskService.Tasksasync();
     }
 
     private void edit(TaskModel task)
@@ -115,8 +111,24 @@
     {
         _navigator.NavigateTo("/tasks/create");
     }
-    private void onMarkDone(TaskModel task)
+    private async void onMarkDone(TaskModel task)
     {
+        task.task_staus = true;
+        await taskService.UpdateTask(task);
+
+        _navigator.NavigateTo("/tasks", forceLoad: true);
+    }
+    private bool FilterFunc1(TaskModel taskItem) => FilterFunc(taskItem, searchString1);
+
+    private bool FilterFunc(TaskModel element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.task_description.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.task_name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
         
+        return false;
     }
 }

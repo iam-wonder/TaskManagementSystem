@@ -1,5 +1,57 @@
-﻿<h3>EditPiority</h3>
+﻿@page "/priority/edit/{id:int}"
+@inject PriorityService priorityService
+@inject NavigationManager _navigator
+
+<h3>EditPiority</h3>
+
+<EditForm Model="model" OnValidSubmit="onSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+
+    <div class="card">
+        <div class="card-header">
+            Edit Priority
+            <button class="btn btn-sm btn-secondary" @onclick="onBack">Back</button>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label for="priority_name" class="form-label">Priority Name</label>
+                <InputText @bind-Value="model.priority_name" class="form-control" id="priority_name"></InputText>
+                <ValidationMessage For="()=> model.priority_name" />
+            </div>
+            <div class="mb-3">
+                <label for="priority_name" class="form-label">Priority Level</label>
+                <InputNumber @bind-Value="model.priority_level" class="form-control" id="priority_name"></InputNumber>
+                <ValidationMessage For="()=> model.priority_level" />
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </div>
+    </div>
+</EditForm>
+
 
 @code {
+    [Parameter]
+    public int id { get; set; }
+
+    public PriorityModel model = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        model = await priorityService.GetPriority(id);
+
+    }
+    private async void onSubmit()
+    {
+        await priorityService.UpdatePriority(model);
+
+        _navigator.NavigateTo("/priority");
+    }
+    private void onBack()
+    {
+        _navigator.NavigateTo("/priority");
+    }
 
 }

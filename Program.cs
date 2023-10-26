@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using TaskManagementSystem.Areas.Identity;
 using TaskManagementSystem.Data;
 using TaskManagementSystem.Services;
@@ -23,6 +24,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddScoped<TaskService>();
 builder.Services.AddScoped<PriorityService>();
 
+builder.Services.AddMudServices();
 builder.Services.AddSingleton<WeatherForecastService>();
 
 

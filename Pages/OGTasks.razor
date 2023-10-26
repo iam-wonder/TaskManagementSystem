@@ -1,0 +1,122 @@
+﻿
+@inject TaskService taskService
+@inject NavigationManager _navigator
+
+<h3>Tasks</h3>
+
+<button class="btn btn-sm btn-warning" @onclick="onCreate" >Create a Task</button>
+<br />
+@if (show_alert)
+{
+     <TaskManagementSystem.Pages.Components.Alert ></TaskManagementSystem.Pages.Components.Alert>
+}
+<br />
+<table class="table table-sm" >
+    <thead>
+        <tr>
+            <th>Task Id</th>
+            <th>Task Name</th>
+            <th>Task Description</th>
+            <th>Due Date</th>
+            <th>Priority Level 
+                <span >
+                    <button class="oi oi-arrow-top" aria-hidden="true" @onclick="PressUp"></button>
+                </span>
+                <span >
+                    <button class="oi oi-arrow-bottom" aria-hidden="true" @onclick="PressDown"></button>
+                </span>
+            </th>
+            <th>Task Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var task in tasks)
+        {
+            <tr>
+                <td>@task.task_id</td>
+                <td>@task.task_name</td>
+                <td>@task.task_description</td>
+                <td>@task.due_date.Date.ToShortDateString()</td>
+                <td>@task.Priority.priority_name</td>
+                @if (task.task_staus)
+                {
+                    <td class="text-success">Is Completed</td>
+                }
+                else{
+                    <td class="text-secondary">Not Completed</td>
+                }
+                <td>
+                    <button class="btn btn-sm btn-secondary" @onclick="() => onMarkDone(task)">Mark as Done</button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-primary" @onclick="() =>edit(task)" >Edit Task</button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger" @onclick="() =>delete(task)">Delete Task</button>
+                </td>
+            </tr>
+        }
+        
+    </tbody>
+</table>
+
+@code {
+    public List<TaskModel> tasks = new();
+
+    bool ascendPriority = false;
+    bool descendPriority = false;
+
+    bool show_alert = false;
+
+    public string alert_message {get;set;} 
+
+    protected async override Task OnInitializedAsync()
+    {
+        tasks = await taskService.Tasksasync();
+
+        if(ascendPriority)
+        {
+            tasks.OrderBy(x => x.Priority);
+        }
+        if (descendPriority)
+        {
+            tasks.OrderByDescending(x => x.Priority);
+        }
+
+
+        await base.OnInitializedAsync();
+    }
+   
+
+    private void PressUp()
+    {
+        ascendPriority = true;
+        tasks.OrderBy(x => x.Priority);
+    }
+    private void PressDown()
+    {
+        descendPriority = true;
+        tasks.OrderByDescending(x => x.Priority);
+    }
+
+    private void edit(TaskModel task)
+    {
+        _navigator.NavigateTo("/tasks/edit/"+ task.id);
+    }
+    private async void delete (TaskModel task)
+    {
+        await taskService.DeleteTask(task.id);
+        show_alert = true;
+        alert_message = "Task was succefully deleted";
+        _navigator.NavigateTo("/tasks", forceLoad:true);
+
+    }
+    private void onCreate()
+    {
+        _navigator.NavigateTo("/tasks/create");
+    }
+    private void onMarkDone(TaskModel task)
+    {
+        
+    }
+}

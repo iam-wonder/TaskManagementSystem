@@ -15,7 +15,8 @@ namespace TaskManagementSystem.Data.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    priority_name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    priority_name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    priority_level = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
