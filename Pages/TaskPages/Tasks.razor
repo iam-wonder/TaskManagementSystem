@@ -2,7 +2,7 @@
 @inject TaskService taskService
 @inject NavigationManager _navigator
 
-<h3>Tasks</h3>
+
 
 <button class="btn btn-sm btn-warning" @onclick="onCreate" >Create a Task</button>
 <br />
@@ -13,7 +13,7 @@
 <br />
 
 <MudTable Items="@taskList" Hover="true" SortLabel="Sort By" FixedHeader="@fixed_header"
-          Bordered="@bordered" Dense="@dense" Striped="@striped" Filter="new Func<TaskModel,bool>(FilterFunc1)">
+          Bordered="@bordered" Dense="@dense" Striped="@striped" Filter="new Func<TaskModel,bool>(FilterFunc1)" Height="@(fixed_header ?"400px":"")">
 
     <ToolBarContent>
         <MudText Typo="Typo.h6">List of Tasks</MudText>

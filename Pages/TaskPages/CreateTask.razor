@@ -3,7 +3,7 @@
 @inject TaskService taskService
 @inject PriorityService priorityService
 
-<h3>CreateTask</h3>
+
 
 <EditForm Model="taskModel" OnValidSubmit="Submit">
 <DataAnnotationsValidator></DataAnnotationsValidator>
@@ -27,6 +27,7 @@
             <div class="mb-3">
                 <label for="due_date" class="form-label">Due Date</label>
                 <InputDate @bind-Value="taskModel.due_date" class="form-control" id="due_date"></InputDate>
+                <ValidationMessage For="() => taskModel.due_date" />
             </div>
             <div class="mb-3">
                 <label for="task_priority" class="form-label">Task Priority</label>

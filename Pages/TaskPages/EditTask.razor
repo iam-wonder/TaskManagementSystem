@@ -3,14 +3,14 @@
 @inject PriorityService priorityService
 @inject NavigationManager _navigator
 
-<h3>EditTask</h3>
+
 
 <EditForm Model="task" OnValidSubmit="Submit">
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>
     <div class="card">
         <div class="card-header">
-            Create a Task
+            Edit a Task
             <button class="btn btn-sm btn-secondary float-end"@onclick="onBack">Back</button>
         </div>
         <div class="card-body">

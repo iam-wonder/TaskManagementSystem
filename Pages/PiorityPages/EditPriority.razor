@@ -2,7 +2,7 @@
 @inject PriorityService priorityService
 @inject NavigationManager _navigator
 
-<h3>EditPiority</h3>
+
 
 <EditForm Model="model" OnValidSubmit="onSubmit">
     <DataAnnotationsValidator></DataAnnotationsValidator>
@@ -11,7 +11,7 @@
     <div class="card">
         <div class="card-header">
             Edit Priority
-            <button class="btn btn-sm btn-secondary" @onclick="onBack">Back</button>
+            <button class="btn btn-sm btn-secondary float-end" @onclick="onBack">Back</button>
         </div>
         <div class="card-body">
             <div class="mb-3">

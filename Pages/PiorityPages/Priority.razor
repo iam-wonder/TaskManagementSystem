@@ -2,9 +2,9 @@
 @inject PriorityService priorityService
 @inject NavigationManager _navigator
 
-<h3>Priority</h3>
+
 <button class="btn btn-sm btn-warning" @onclick="onCreate">Create A Priority</button>
-<table class="table table-light table-sm" style="width:50%;justify-content:center" >
+<table class="table table-light " style="width:75%;align-items:center" >
     <thead>
         <tr>
             <th>Priority Name</th>
@@ -18,10 +18,10 @@
                 <td>@priority.priority_name</td>
                 <td>@priority.priority_level</td>
                 <td>
-                    <button class="btn btn-sm btn-primary" @onclick="() => onEdit(priority)">Edit</button>
+                    <button class="btn  btn-primary" @onclick="() => onEdit(priority)">Edit</button>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-danger" @onclick="() => onDelete(priority)">Delete</button>
+                    <button class="btn  btn-danger" @onclick="() => onDelete(priority)">Delete</button>
                 </td>
             </tr>
         }

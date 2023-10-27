@@ -1,5 +1,44 @@
-﻿<h3>PieChart</h3>
+﻿@inject TaskService taskService
+
+<MudPaper Class="pa-4">
+    <MudChart ChartType="ChartType.Pie" InputData="@values.ToArray()"  InputLabels="@labels" Width="200px" Height="200px" />
+</MudPaper>
+
+<div class="d-flex flex-wrap mt-4">
+    <MudText Typo="Typo.h6" Color="Color.Secondary" >Total Number of Task: @values.FirstOrDefault()</MudText>
+    <MudSpacer></MudSpacer>
+    <MudText Typo="Typo.h6" Color="Color.Success" >Number of Completed Tasks: @values.LastOrDefault()</MudText>
+</div>
+
+
+
+
 
 @code {
+
+   
+
+    int dataSize = 2;
+
+
+
+    string[] labels = { "Total Tasks", "Task Completed"};
+
+
+    public List<TaskModel> tasks = new();
+
+    public List<double> values = new();
+    protected async override Task OnInitializedAsync()
+    {
+
+
+        tasks = await taskService.Tasksasync();
+        var temp = tasks;
+        values.Add((double)temp.Count());
+        values.Add((double)temp.Where(x => x.task_staus == true).Count());
+
+        
+    }
+
 
 }
