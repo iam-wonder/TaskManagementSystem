@@ -1,14 +1,21 @@
 ﻿@inject TaskService taskService
 
-<MudPaper Class="pa-4">
-    <MudChart ChartType="ChartType.Pie" InputData="@values.ToArray()"  InputLabels="@labels" Width="200px" Height="200px" />
-</MudPaper>
 
-<div class="d-flex flex-wrap mt-4">
-    <MudText Typo="Typo.h6" Color="Color.Secondary" >Total Number of Task: @values.FirstOrDefault()</MudText>
-    <MudSpacer></MudSpacer>
-    <MudText Typo="Typo.h6" Color="Color.Success" >Number of Completed Tasks: @values.LastOrDefault()</MudText>
-</div>
+@if(tasks.Count()>0)
+{
+    <MudPaper Class="pa-4">
+        <MudChart ChartType="ChartType.Pie" InputData="@values.ToArray()" InputLabels="@labels" Width="200px" Height="200px" />
+    </MudPaper>
+
+    <div class="d-flex flex-wrap mt-4">
+        <MudText Typo="Typo.h6" Color="Color.Secondary">Total Number of Task: @values.FirstOrDefault()</MudText>
+        <MudSpacer></MudSpacer>
+        <MudText Typo="Typo.h6" Color="Color.Success">Number of Completed Tasks: @values[1]</MudText>
+        <MudSpacer></MudSpacer>
+        <MudText Typo="Typo.h6" Color="Color.Error">Number of Overdue Tasks: @values.LastOrDefault()</MudText>
+    </div>
+}
+
 
 
 
@@ -16,13 +23,13 @@
 
 @code {
 
-   
-
-    int dataSize = 2;
 
 
+    int dataSize = 3;
 
-    string[] labels = { "Total Tasks", "Task Completed"};
+
+
+    string[] labels = { "Total Tasks", "Task Completed","Task OverDue"};
 
 
     public List<TaskModel> tasks = new();
@@ -36,6 +43,7 @@
         var temp = tasks;
         values.Add((double)temp.Count());
         values.Add((double)temp.Where(x => x.task_staus == true).Count());
+        values.Add((double)temp.Where(x=>x.task_staus == false).Where(x=>x.due_date.Date < DateTime.Today ).Count());
 
         
     }

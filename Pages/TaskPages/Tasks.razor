@@ -41,7 +41,17 @@
         }
         else
         {
-            <MudTd DataLabel="Task Status">Not Completed</MudTd>
+            <MudTd DataLabel="Task Status">
+                <p>Not Completed</p>
+                @if(!context.task_staus && context.due_date.Date == DateTime.Today){
+                    <p class="text-warning">Task Due Today</p>
+                }
+                @if (!context.task_staus && context.due_date.Date < DateTime.Today)
+                {
+                    <p class="text-danger">Task Overdue</p>
+                }
+
+            </MudTd>
         }
         @if (!context.task_staus)
         {
