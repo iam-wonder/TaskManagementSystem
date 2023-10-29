@@ -25,8 +25,6 @@ builder.Services.AddScoped<TaskService>();
 builder.Services.AddScoped<PriorityService>();
 
 builder.Services.AddMudServices();
-builder.Services.AddSingleton<WeatherForecastService>();
-
 
 var app = builder.Build();
 
