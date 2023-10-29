@@ -12,6 +12,12 @@ namespace TaskManagementSystem.Data
         }
 
         public DbSet<TaskModel> Tasks { get; set; }
-        public DbSet<PriorityModel> Priorities { get;set; } 
+        public DbSet<PriorityModel> Priorities { get;set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            new DbSeed(modelBuilder).DbSeeder();
+        }
     }
 }
